@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\Admin\GorController;
+
 
 Route::get('/', function () {
 
@@ -47,15 +49,20 @@ Route::middleware([
 
 Route::middleware([
     'auth',
-    'role:admin'
-])->prefix('admin')->group(function () {
-
+    'role:admin',
+    'nocache'
+])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', function () {
 
         return Inertia::render('Admin/Dashboard');
 
     })->name('admin.dashboard');
 
+    Route::resource(
+        'gors',
+        GorController::class
+    );
+    
 });
 
 require __DIR__.'/auth.php';

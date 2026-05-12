@@ -3,16 +3,25 @@
 namespace App\Repositories\Implementations;
 
 use App\Repositories\Interfaces\BaseRepositoryInterface;
+use Illuminate\Database\Eloquent\Model;
 
 class BaseRepository implements BaseRepositoryInterface
 {
-    protected $model;
+    protected Model $model;
 
     public function getAll()
     {
         return $this->model
             ->latest()
             ->get();
+    }
+
+    public function paginate(
+        int $perPage = 10
+    ) {
+        return $this->model
+            ->latest()
+            ->paginate($perPage);
     }
 
     public function findById(string $id)
@@ -27,8 +36,11 @@ class BaseRepository implements BaseRepositoryInterface
             ->create($data);
     }
 
-    public function update(string $id, array $data)
-    {
+    public function update(
+        string $id,
+        array $data
+    ) {
+
         $model = $this->findById($id);
 
         $model->update($data);

@@ -21,7 +21,7 @@ class GorPolicy
      */
     public function view(User $user, Gor $gor): bool
     {
-        return false;
+        return $user->hasRole('admin');
     }
 
     /**
@@ -29,7 +29,7 @@ class GorPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->hasRole('admin');
     }
 
     /**
@@ -37,7 +37,7 @@ class GorPolicy
      */
     public function update(User $user, Gor $gor): bool
     {
-        return false;
+        return $user->hasRole('admin');
     }
 
     /**
@@ -45,7 +45,7 @@ class GorPolicy
      */
     public function delete(User $user, Gor $gor): bool
     {
-        return false;
+        return $user->hasRole('admin');
     }
 
     /**
