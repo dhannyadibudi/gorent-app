@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
  * @extends Factory<User>
  */
 class UserFactory extends Factory
-{
+{ 
     /**
      * The current password being used by the factory.
      */
@@ -25,8 +25,10 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
+            'id' => (string) Str::uuid(),
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
+            'phone' => '+628' . fake()->numerify('##########'),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
