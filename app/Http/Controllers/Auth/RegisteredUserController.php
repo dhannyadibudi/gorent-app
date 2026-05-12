@@ -13,6 +13,7 @@ use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Enums\UserRoleEnum;
 
 class RegisteredUserController extends Controller
 {
@@ -24,6 +25,25 @@ class RegisteredUserController extends Controller
         return Inertia::render('Auth/Register');
     }
 
+    private function normalizePhone(string $phone): string
+    {
+        $phone = preg_replace('/[^0-9]/', '', $phone);
+
+        if (str_starts_with($phone, '0')) {
+            return '+62' . substr($phone, 1);
+        }
+
+        if (str_starts_with($phone, '62')) {
+            return '+' . $phone;
+        }
+
+        if (str_starts_with($phone, '8')) {
+            return '+62' . $phone;
+        }
+
+        return $phone;
+    }
+
     /**
      * Handle an incoming registration request.
      *
@@ -31,15 +51,18 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $phone = preg_replace('/[^0-9]/', '', $request->phone);
-        if (str_starts_with($phone, '0')) {
-            $phone = '+62' . substr($phone, 1);
-        } elseif (str_starts_with($phone, '62')) {
-            $phone = '+' . $phone;
-        }
-        
+        $phone = $this->normalizePhone($request->phone);
+
+        $request->merge([
+            'phone' => $phone
+        ]);
+
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => [
+                'required',
+                'string',
+                'max:255'
+            ],
 
             'email' => [
                 'required',
@@ -47,7 +70,7 @@ class RegisteredUserController extends Controller
                 'lowercase',
                 'email',
                 'max:255',
-                'unique:' . User::class,
+                'unique:users,email'
             ],
 
             'phone' => [
@@ -55,13 +78,13 @@ class RegisteredUserController extends Controller
                 'string',
                 'max:20',
                 'unique:users,phone',
-                'regex:/^\+62[0-9]{9,13}$/',
+                'regex:/^\+62[0-9]{9,13}$/'
             ],
 
             'password' => [
                 'required',
                 'confirmed',
-                Rules\Password::defaults(),
+                Rules\Password::defaults()
             ],
         ]);
 
@@ -71,11 +94,15 @@ class RegisteredUserController extends Controller
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
         ]);
+        
+        $user->assignRole(UserRoleEnum::CUSTOMER->value);
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect()->intended(
+            route('dashboard', absolute: false)
+        );
     }
 }

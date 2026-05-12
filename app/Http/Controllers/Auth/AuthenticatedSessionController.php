@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Enums\UserRoleEnum;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -28,13 +29,25 @@ class AuthenticatedSessionController extends Controller
      * Handle an incoming authentication request.
      */
     public function store(LoginRequest $request): RedirectResponse
-    {
-        $request->authenticate();
+{
+    $request->authenticate();
 
-        $request->session()->regenerate();
+    $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+    $user = Auth::user();
+
+    if ($user->hasRole(UserRoleEnum::ADMIN->value)) {
+
+        return redirect()->intended(
+            route('admin.dashboard', absolute: false)
+        );
+
     }
+
+    return redirect()->intended(
+        route('dashboard', absolute: false)
+    );
+}
 
     /**
      * Destroy an authenticated session.
