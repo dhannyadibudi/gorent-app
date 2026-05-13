@@ -42,7 +42,7 @@ const menus = [
         class="
             w-72
             min-h-screen
-            bg-white
+            bg-black
             border-r
             p-4
         "

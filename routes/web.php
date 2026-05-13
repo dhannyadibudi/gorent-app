@@ -4,9 +4,6 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\Admin\GorController;
-use App\Http\Controllers\Admin\CourtController;
-
 
 Route::get('/', function () {
 
@@ -18,18 +15,18 @@ Route::get('/', function () {
     ]);
 
 });
-Route::get('/test', function () {
-    return Inertia::render('Test');
-});
+
 Route::middleware([
     'auth',
     'verified',
-    'nocache'
+    'nocache',
 ])->group(function () {
 
     Route::get('/dashboard', function () {
 
-        return Inertia::render('Dashboard');
+        return Inertia::render(
+            'Dashboard'
+        );
 
     })->name('dashboard');
 
@@ -50,27 +47,6 @@ Route::middleware([
 
 });
 
-Route::middleware([
-    'auth',
-    'role:admin',
-    'nocache'
-])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', function () {
-
-        return Inertia::render('Admin/Dashboard');
-
-    })->name('dashboard');
-
-    Route::resource(
-        'gors',
-        GorController::class
-    );
-
-    Route::resource(
-        'courts',
-        CourtController::class
-    );
-    
-});
-
+require __DIR__.'/web/admin.php';
+require __DIR__.'/web/customer.php';
 require __DIR__.'/auth.php';

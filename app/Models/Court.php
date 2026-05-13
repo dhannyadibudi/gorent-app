@@ -31,4 +31,9 @@ class Court extends Model
     {
         return $this->belongsTo(Gor::class);
     }
+
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class);
+    }
 }

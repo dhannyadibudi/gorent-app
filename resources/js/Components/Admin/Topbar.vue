@@ -1,5 +1,6 @@
 <script setup>
 import { router } from '@inertiajs/vue3'
+import Button from 'primevue/button';
 </script>
 
 <template>
@@ -7,7 +8,7 @@ import { router } from '@inertiajs/vue3'
     <header
         class="
             h-16
-            bg-white
+            bg-black
             border-b
             px-6
             flex
@@ -24,19 +25,12 @@ import { router } from '@inertiajs/vue3'
 
         </div>
 
-        <button
+        <Button
+            label="Logout"
             @click="router.post('/logout')"
-            class="
-                px-4
-                py-2
-                rounded-lg
-                bg-black
-                text-white
-            "
-        >
-            Logout
-        </button>
-
+            severity="danger" 
+            
+        />
     </header>
 
 </template>
