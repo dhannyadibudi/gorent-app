@@ -5,6 +5,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Admin\GorController;
+use App\Http\Controllers\Admin\CourtController;
 
 
 Route::get('/', function () {
@@ -17,7 +18,9 @@ Route::get('/', function () {
     ]);
 
 });
-
+Route::get('/test', function () {
+    return Inertia::render('Test');
+});
 Route::middleware([
     'auth',
     'verified',
@@ -56,11 +59,16 @@ Route::middleware([
 
         return Inertia::render('Admin/Dashboard');
 
-    })->name('admin.dashboard');
+    })->name('dashboard');
 
     Route::resource(
         'gors',
         GorController::class
+    );
+
+    Route::resource(
+        'courts',
+        CourtController::class
     );
     
 });

@@ -7,26 +7,28 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Gor extends Model
+class Court extends Model
 {
     use HasFactory;
     use HasUuid;
     use SoftDeletes;
 
     protected $fillable = [
+        'gor_id',
         'name',
-        'description',
-        'address',
-        'thumbnail',
+        'price_per_hour',
+        'open_time',
+        'close_time',
         'is_active',
     ];
 
     protected $casts = [
+        'price_per_hour' => 'decimal:2',
         'is_active' => 'boolean',
     ];
 
-    public function courts()
+    public function gor()
     {
-        return $this->hasMany(Court::class);
+        return $this->belongsTo(Gor::class);
     }
 }

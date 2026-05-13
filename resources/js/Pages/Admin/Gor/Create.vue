@@ -1,12 +1,23 @@
 <script setup>
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+
 import { useForm } from '@inertiajs/vue3'
+
+import InputText from 'primevue/inputtext'
+import Textarea from 'primevue/textarea'
+import Button from 'primevue/button'
+import Checkbox from 'primevue/checkbox'
+
+defineOptions({
+    layout: AdminLayout,
+})
 
 const form = useForm({
     name: '',
     description: '',
     address: '',
-    is_active: true,
     thumbnail: null,
+    is_active: true,
 })
 
 const submit = () => {
@@ -15,61 +26,104 @@ const submit = () => {
 </script>
 
 <template>
-    <div class="p-6 max-w-xl">
 
-        <h1 class="text-2xl font-bold mb-6">
-            Create GOR
-        </h1>
+    <div class="max-w-3xl">
 
-        <form
-            @submit.prevent="submit"
-            class="space-y-4"
-        >
+        <div class="mb-6">
 
-            <input
-                v-model="form.name"
-                type="text"
-                placeholder="GOR Name"
-                class="border p-2 w-full rounded"
-            />
+            <h1 class="text-3xl font-bold">
+                Create GOR
+            </h1>
 
-            <textarea
-                v-model="form.description"
-                placeholder="Description"
-                class="border p-2 w-full rounded"
-            />
+        </div>
 
-            <input
-                v-model="form.address"
-                type="text"
-                placeholder="Address"
-                class="border p-2 w-full rounded"
-            />
+        <div class="bg-white rounded-2xl shadow-sm p-6">
 
-            <input
-                type="file"
-                @input="form.thumbnail = $event.target.files[0]"
-            />
+            <form
+                @submit.prevent="submit"
+                class="space-y-6"
+            >
 
-            <label class="flex items-center gap-2">
+                <div class="space-y-2">
 
-                <input
-                    v-model="form.is_active"
-                    type="checkbox"
+                    <label class="font-medium">
+                        Name
+                    </label>
+
+                    <InputText
+                        v-model="form.name"
+                        class="w-full"
+                    />
+
+                </div>
+
+                <div class="space-y-2">
+
+                    <label class="font-medium">
+                        Description
+                    </label>
+
+                    <Textarea
+                        v-model="form.description"
+                        rows="5"
+                        class="w-full"
+                    />
+
+                </div>
+
+                <div class="space-y-2">
+
+                    <label class="font-medium">
+                        Address
+                    </label>
+
+                    <InputText
+                        v-model="form.address"
+                        class="w-full"
+                    />
+
+                </div>
+
+                <div class="space-y-2">
+
+                    <label class="font-medium">
+                        Thumbnail
+                    </label>
+
+                    <input
+                        type="file"
+                        @input="
+                            form.thumbnail =
+                            $event.target.files[0]
+                        "
+                    />
+
+                </div>
+
+                <div class="flex items-center gap-2">
+
+                    <Checkbox
+                        v-model="form.is_active"
+                        binary
+                    />
+
+                    <label>
+                        Active
+                    </label>
+
+                </div>
+
+                <Button
+                    type="submit"
+                    label="Save"
+                    icon="pi pi-check"
+                    :loading="form.processing"
                 />
 
-                Active
+            </form>
 
-            </label>
-
-            <button
-                type="submit"
-                class="bg-black text-white px-4 py-2 rounded"
-            >
-                Save
-            </button>
-
-        </form>
+        </div>
 
     </div>
+
 </template>
