@@ -17,10 +17,31 @@ class PaymentController extends Controller
     ) {
 
         if (
-            $payment->status === 'paid'
+            $payment->status !== 'pending'
         ) {
 
-            return back();
+            return back()->with(
+                'error',
+                'Payment is no longer valid.'
+            );
+        }
+
+        if (
+            $payment->expired_at < now()
+        ) {
+
+            $payment->update([
+                'status' => 'expired',
+            ]);
+
+            $payment->booking()->update([
+                'status' => 'expired',
+            ]);
+
+            return back()->with(
+                'error',
+                'Payment has expired.'
+            );
         }
 
         $this->paymentService

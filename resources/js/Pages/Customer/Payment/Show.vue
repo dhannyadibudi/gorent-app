@@ -1,8 +1,9 @@
 <script setup>
 import dayjs from 'dayjs'
+import { router } from '@inertiajs/vue3'
 
 import CustomerLayout from '@/Layouts/CustomerLayout.vue'
-import { router } from '@inertiajs/vue3'
+
 import Card from 'primevue/card'
 import Button from 'primevue/button'
 import Tag from 'primevue/tag'
@@ -14,11 +15,25 @@ defineOptions({
 const props = defineProps({
     booking: Object,
 })
+
 const simulatePayment = () => {
 
     router.post(
         `/customer/payments/${props.booking.payment.id}/simulate`
     )
+}
+
+const paymentSeverity = (status) => {
+
+    if (status === 'paid') {
+        return 'success'
+    }
+
+    if (status === 'expired') {
+        return 'danger'
+    }
+
+    return 'warn'
 }
 </script>
 
@@ -26,7 +41,12 @@ const simulatePayment = () => {
 
     <div class="max-w-2xl mx-auto">
 
-        <Card>
+        <Card
+            class="
+                shadow-md
+                rounded-2xl
+            "
+        >
 
             <template #title>
 
@@ -59,9 +79,11 @@ const simulatePayment = () => {
                         </div>
 
                         <div class="font-bold">
+
                             {{
                                 booking.schedule.court.name
                             }}
+
                         </div>
 
                     </div>
@@ -77,7 +99,9 @@ const simulatePayment = () => {
                             {{
                                 dayjs(
                                     booking.schedule.schedule_date
-                                ).format('DD MMM YYYY')
+                                ).format(
+                                    'DD MMM YYYY'
+                                )
                             }}
 
                         </div>
@@ -135,12 +159,12 @@ const simulatePayment = () => {
 
                         <Tag
                             :value="
-                                booking.payment.status
+                                booking.payment?.status ?? 'pending'
                             "
                             :severity="
-                                booking.payment.status === 'paid'
-                                    ? 'success'
-                                    : 'warn'
+                                paymentSeverity(
+                                    booking.payment?.status ?? 'pending'
+                                )
                             "
                         />
 
@@ -155,7 +179,7 @@ const simulatePayment = () => {
 
                         <Button
                             v-if="
-                                booking.payment.status !== 'paid'
+                                booking.payment?.status === 'pending'
                             "
                             label="Simulate Payment"
                             icon="pi pi-wallet"

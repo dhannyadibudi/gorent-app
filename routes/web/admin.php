@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\GorController;
 use App\Http\Controllers\Admin\CourtController;
 use App\Http\Controllers\Admin\ScheduleController;
+use App\Http\Controllers\Admin\DashboardController;
+
 
 Route::middleware([
     'auth',
@@ -17,13 +19,7 @@ Route::middleware([
 
     Route::get(
         '/dashboard',
-        function () {
-
-            return inertia(
-                'Admin/Dashboard'
-            );
-
-        }
+        [DashboardController::class, 'index']
     )->name('dashboard');
 
     Route::resource(

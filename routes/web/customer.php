@@ -50,4 +50,9 @@ Route::middleware([
         '/payments/{payment}/simulate',
         [PaymentController::class, 'simulate']
     )->name('payment.simulate');
+
+    Route::get(
+        '/my-bookings',
+        [BookingController::class, 'index']
+    )->name('booking.index');
 });

@@ -14,6 +14,26 @@ class BookingController extends Controller
         protected BookingService $bookingService
     ) {}
 
+    public function index()
+    {
+        $bookings = auth()
+            ->user()
+            ->bookings()
+            ->with([
+                'payment',
+                'schedule.court.gor',
+            ])
+            ->latest()
+            ->paginate(10);
+
+        return inertia(
+            'Customer/Booking/Index',
+            [
+                'bookings' => $bookings,
+            ]
+        );
+    }
+
     public function create(
         Request $request,
         string $courtId
