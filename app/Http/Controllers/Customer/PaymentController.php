@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers\Customer;
 
+use Illuminate\Http\Request;
 use App\Models\Payment;
+use App\Models\Booking;
 use App\Services\Payment\PaymentService;
+use App\Services\MidtransService;
+use Midtrans\Notification;
 use App\Http\Controllers\Controller;
 
 class PaymentController extends Controller
@@ -55,5 +59,94 @@ class PaymentController extends Controller
                 'success',
                 'Payment success'
             );
+    }
+
+    public function snapToken(
+    Booking $booking,
+    MidtransService $midtransService
+    ) {
+
+        abort_if(
+            $booking->user_id !== auth()->id(),
+            403
+        );
+
+        $booking->load('user');
+
+        $snapToken = $midtransService
+            ->createTransaction($booking);
+
+        return response()->json([
+            'snap_token' => $snapToken,
+        ]);
+    }
+
+    public function callback(Request $request)
+    {
+        \Midtrans\Config::$serverKey =
+            config('midtrans.server_key');
+
+        \Midtrans\Config::$isProduction =
+            config('midtrans.is_production');
+
+        \Midtrans\Config::$isSanitized = true;
+
+        \Midtrans\Config::$is3ds = true;
+
+        $notification = new \Midtrans\Notification();
+
+        $transactionStatus =
+            $notification->transaction_status;
+
+        $orderId =
+            $notification->order_id;
+
+        $payment = Payment::whereHas(
+            'booking',
+            fn ($query) =>
+                $query->where(
+                    'invoice_number',
+                    $orderId
+                )
+        )->first();
+
+        if (!$payment) {
+
+            return response()->json([
+                'message' => 'Payment not found'
+            ], 404);
+
+        }
+
+        if (
+            in_array(
+                $transactionStatus,
+                ['capture', 'settlement']
+            )
+        ) {
+
+            $payment->update([
+                'status' => 'paid',
+                'paid_at' => now(),
+            ]);
+
+        }
+
+        if (
+            in_array(
+                $transactionStatus,
+                ['expire', 'cancel', 'deny']
+            )
+        ) {
+
+            $payment->update([
+                'status' => 'failed',
+            ]);
+
+        }
+
+        return response()->json([
+            'success' => true,
+        ]);
     }
 }

@@ -35,6 +35,36 @@ const paymentSeverity = (status) => {
 
     return 'warn'
 }
+
+const payOnline = async () => {
+
+    const response = await fetch(
+        `/customer/bookings/${props.booking.id}/snap-token`
+    )
+
+    const data = await response.json()
+
+    window.snap.pay(
+        data.snap_token,
+        {
+            onSuccess: function(result) {
+                window.location.reload()
+            },
+
+            onPending: function(result) {
+                window.location.reload()
+            },
+
+            onError: function(result) {
+                window.location.reload()
+            },
+
+            onClose: function() {
+                window.location.reload()
+            }
+        }
+    )
+}
 </script>
 
 <template>
@@ -176,6 +206,16 @@ const paymentSeverity = (status) => {
                             pt-4
                         "
                     >
+                        <Button
+                            v-if="
+                                booking.payment?.status === 'pending'
+                            "
+                            label="Pay Online"
+                            icon="pi pi-credit-card"
+                            severity="success"
+                            class="w-full mb-3"
+                            @click="payOnline"
+                        />
 
                         <Button
                             v-if="
@@ -187,8 +227,21 @@ const paymentSeverity = (status) => {
                             @click="simulatePayment"
                         />
 
-                    </div>
+                        <a
+                            :href="`/customer/bookings/${booking.id}/invoice`"
+                            target="_blank"
+                            class="block mt-3"
+                        >
 
+                            <Button
+                                label="Download Invoice"
+                                icon="pi pi-download"
+                                severity="contrast"
+                                class="w-full"
+                            />
+
+                        </a>
+                    </div>
                 </div>
 
             </template>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Customer\PaymentController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -15,6 +16,11 @@ Route::get('/', function () {
     ]);
 
 });
+
+Route::post(
+    '/midtrans/callback',
+    [PaymentController::class, 'callback']
+);
 
 Route::middleware([
     'auth',

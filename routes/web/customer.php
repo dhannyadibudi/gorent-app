@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Customer\CourtController;
 use App\Http\Controllers\Customer\BookingController;
 use App\Http\Controllers\Customer\PaymentController;
+use App\Http\Controllers\Customer\InvoiceController;
 
 Route::middleware([
     'auth',
@@ -29,6 +30,11 @@ Route::middleware([
     )->name('booking.store');
 
     Route::get(
+        '/bookings/{booking}/invoice',
+        [InvoiceController::class, 'download']
+    )->name('booking.invoice');
+
+    Route::get(
         '/bookings/{booking}/payment',
         function (\App\Models\Booking $booking) {
 
@@ -45,6 +51,11 @@ Route::middleware([
 
         }
     )->name('booking.payment');
+
+    Route::get(
+        '/bookings/{booking}/snap-token',
+        [PaymentController::class, 'snapToken']
+    )->name('booking.snap-token');
 
     Route::post(
         '/payments/{payment}/simulate',
