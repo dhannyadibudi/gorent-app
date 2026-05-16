@@ -41,20 +41,20 @@ defineProps({
         >
             <div class="flex flex-col items-center justify-center mb-12">
                 <!-- V1 -->
-                <!-- <h1
+                <h1
                     class="text-5xl font-black tracking-tight flex items-center select-none m-0 text-gray-950"
                 >
                     <span class="flex flex-col items-center relative">
                         Go
                         <span
-                            class="text-2xl mt-[-6px] rotate-12 drop-shadow-sm"
+                            class="text-2xl mt-[-6px] ml-8 rotate-12 drop-shadow-sm"
                             >🏸</span
                         >
                     </span>
-                    <span class="text-[#f04a33] ml-1">Rent</span>
-                </h1> -->
+                    <span class="text-[#f04a33] ml-0">Rent</span>
+                </h1>
                 <!-- V2 -->
-                <h1
+                <!-- <h1
                     class="text-5xl font-black tracking-tight flex items-center justify-center select-none m-0 text-gray-950"
                 >
                     <span
@@ -70,7 +70,7 @@ defineProps({
                     <span class="text-[#f04a33] ml-0 self-start pt-[2px]"
                         >Rent</span
                     >
-                </h1>
+                </h1> -->
                 <p
                     class="text-gray-600 text-xs font-bold mt-4 tracking-widest uppercase"
                 >
