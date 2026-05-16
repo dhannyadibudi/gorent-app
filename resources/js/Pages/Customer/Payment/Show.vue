@@ -1,13 +1,15 @@
 <script setup>
 import dayjs from 'dayjs'
+import duration from 'dayjs/plugin/duration'
 import { router } from '@inertiajs/vue3'
-
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import CustomerLayout from '@/Layouts/CustomerLayout.vue'
 
 import Card from 'primevue/card'
 import Button from 'primevue/button'
 import Tag from 'primevue/tag'
 
+dayjs.extend(duration)
 defineOptions({
     layout: CustomerLayout,
 })
@@ -17,33 +19,26 @@ const props = defineProps({
 })
 
 const simulatePayment = () => {
-
     router.post(
         `/customer/payments/${props.booking.payment.id}/simulate`
     )
 }
 
 const paymentSeverity = (status) => {
-
     if (status === 'paid') {
         return 'success'
     }
-
     if (status === 'expired') {
         return 'danger'
     }
-
     return 'warn'
 }
 
 const payOnline = async () => {
-
     const response = await fetch(
         `/customer/bookings/${props.booking.id}/snap-token`
     )
-
     const data = await response.json()
-
     window.snap.pay(
         data.snap_token,
         {
@@ -65,6 +60,67 @@ const payOnline = async () => {
         }
     )
 }
+
+const now = ref(dayjs())
+let interval = null
+let paymentinterval = null
+const remainingTime = computed(() => {
+    if (!props.booking.expired_at) {
+        return '-'
+    }
+
+    const expiredAt = dayjs(
+        props.booking.expired_at
+    )
+
+    const diff = expiredAt.diff(now.value)
+
+    if (diff <= 0) {
+        return 'Expired'
+    }
+
+    const durationValue =
+        dayjs.duration(diff)
+
+    const hours = String(
+        durationValue.hours()
+    ).padStart(2, '0')
+
+    const minutes = String(
+        durationValue.minutes()
+    ).padStart(2, '0')
+
+    const seconds = String(
+        durationValue.seconds()
+    ).padStart(2, '0')
+
+    return `${hours}:${minutes}:${seconds}`
+
+})
+
+const checkPaymentStatus = async () => {
+    const response = await fetch(
+        `/customer/bookings/${props.booking.id}/status`
+    )
+    const data = await response.json()
+    if (data.status === 'paid') {
+        window.location.reload()
+    }
+}
+
+onMounted(() => {
+    interval = setInterval(() => {
+        now.value = dayjs()
+    }, 1000)
+
+    paymentInterval = setInterval(() => {
+        checkPaymentStatus()
+    }, 10000)
+})
+onUnmounted(() => {
+    clearInterval(interval)
+    clearInterval(paymentInterval)
+})
 </script>
 
 <template>
@@ -241,11 +297,30 @@ const payOnline = async () => {
                             />
 
                         </a>
+                        <div>
+
+                            <div class="text-black-500">
+                                Payment Deadline
+                            </div>
+
+                            <div
+                                class="
+                                    text-red-500
+                                    font-bold
+                                    text-xl
+                                "
+                            >
+
+                                {{ remainingTime }}
+
+                            </div>
+
+                        </div>
                     </div>
                 </div>
 
             </template>
-
+            
         </Card>
 
     </div>

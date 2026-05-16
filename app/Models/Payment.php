@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Enums\PaymentStatusEnum;
 
 class Payment extends Model
 {
@@ -26,6 +27,7 @@ class Payment extends Model
         'payload' => 'array',
         'paid_at' => 'datetime',
         'expired_at' => 'datetime',
+        'status' => PaymentStatusEnum::class,
     ];
 
     public function booking()

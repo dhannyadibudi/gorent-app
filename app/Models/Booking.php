@@ -6,6 +6,7 @@ use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Enums\BookingStatusEnum;
 
 class Booking extends Model
 {
@@ -26,6 +27,7 @@ class Booking extends Model
     protected $casts = [
         'paid_at' => 'datetime',
         'expired_at' => 'datetime',
+        'status' => BookingStatusEnum::class,
     ];
 
     public function user()

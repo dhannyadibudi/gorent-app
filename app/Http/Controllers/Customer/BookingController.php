@@ -88,4 +88,6 @@ class BookingController extends Controller
             $result['payment']['redirect_url']
         );
     }
+
+    
 }

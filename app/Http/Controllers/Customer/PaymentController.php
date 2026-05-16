@@ -149,4 +149,13 @@ class PaymentController extends Controller
             'success' => true,
         ]);
     }
+
+    public function status(Booking $booking)
+    {
+        return response()->json([
+            'status' => $booking
+                ->payment
+                ?->status ?? 'pending',
+        ]);
+    }
 }

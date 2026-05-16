@@ -70,4 +70,34 @@ class BookingService
             ];
         });
     }
+
+    public function cancel(Booking $booking): Booking
+    {
+        DB::transaction(function () use ($booking) {
+
+            $booking->update([
+                'status' => BookingStatusEnum::CANCELLED
+            ]);
+
+            if ($booking->payment) {
+                $booking->payment->update([
+                    'status' => 'failed'
+                ]);
+            }
+        });
+
+        return $booking->fresh();
+    }
+
+    public function complete(Booking $booking): Booking
+    {
+        DB::transaction(function () use ($booking) {
+
+            $booking->update([
+                'status' => BookingStatusEnum::COMPLETED
+            ]);
+        });
+
+        return $booking->fresh();
+    }
 }

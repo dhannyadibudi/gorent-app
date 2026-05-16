@@ -6,7 +6,7 @@ use App\Http\Controllers\Admin\GorController;
 use App\Http\Controllers\Admin\CourtController;
 use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\Admin\DashboardController;
-
+use App\Http\Controllers\Admin\AdminBookingController;
 
 Route::middleware([
     'auth',
@@ -39,5 +39,23 @@ Route::middleware([
         'index',
         'store',
     ]);
+
+    Route::resource(
+        'bookings',
+        AdminBookingController::class
+    )->only([
+        'index',
+        'show'
+    ]);
+
+    Route::patch(
+        'bookings/{booking}/cancel',
+        [AdminBookingController::class, 'cancel']
+    )->name('bookings.cancel');
+
+    Route::patch(
+        'bookings/{booking}/complete',
+        [AdminBookingController::class, 'complete']
+    )->name('bookings.complete');
 
 });

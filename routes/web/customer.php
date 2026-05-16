@@ -53,6 +53,11 @@ Route::middleware([
     )->name('booking.payment');
 
     Route::get(
+        '/bookings/{booking}/status',
+        [PaymentController::class, 'status']
+    )->name('booking.status');
+
+    Route::get(
         '/bookings/{booking}/snap-token',
         [PaymentController::class, 'snapToken']
     )->name('booking.snap-token');
