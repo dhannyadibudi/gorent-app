@@ -60,11 +60,8 @@ class BookingService
             */
 
             $booking = Booking::create([
-
                 'user_id' => $user->id,
-
                 'schedule_id' => $schedule->id,
-
                 'invoice_number' =>
                     'INV-' .
                     now()->format('YmdHis') .
@@ -72,13 +69,10 @@ class BookingService
                     Str::upper(
                         Str::random(5)
                     ),
-
                 'total_price' =>
                     $schedule->court->price_per_hour,
-
                 'status' =>
                     BookingStatusEnum::PENDING_PAYMENT,
-
                 'expired_at' =>
                     Carbon::now()
                         ->addMinutes(15),
@@ -139,13 +133,11 @@ class BookingService
         DB::transaction(function () use (
             $booking
         ) {
-
             /*
             |--------------------------------------------------------------------------
             | Update Booking
             |--------------------------------------------------------------------------
             */
-
             $booking->update([
                 'status' =>
                     BookingStatusEnum::CANCELLED
@@ -156,7 +148,6 @@ class BookingService
             | Release Schedule
             |--------------------------------------------------------------------------
             */
-
             $booking->schedule()->update([
                 'is_booked' => false,
             ]);
@@ -168,7 +159,6 @@ class BookingService
             */
 
             if ($booking->payment) {
-
                 $booking->payment->update([
                     'status' =>
                         PaymentStatusEnum::FAILED
@@ -190,7 +180,6 @@ class BookingService
         DB::transaction(function () use (
             $booking
         ) {
-
             $booking->update([
                 'status' =>
                     BookingStatusEnum::COMPLETED

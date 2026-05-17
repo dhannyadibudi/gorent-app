@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CourtController;
 use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\AdminBookingController;
+use Inertia\Inertia;
 
 Route::middleware([
     'auth',
@@ -16,6 +17,9 @@ Route::middleware([
 ->prefix('admin')
 ->name('admin.')
 ->group(function () {
+    Route::get('testing/table', function () {
+        return Inertia::render('Admin/Testing/TableTest');
+    });
 
     Route::get(
         '/dashboard',

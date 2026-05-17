@@ -19,7 +19,7 @@ class AdminBookingController extends Controller
         $bookings = Booking::query()
             ->with([
                 'user',
-                'court.gor',
+                'schedule.court.gor',
                 'payment'
             ])
             ->when(

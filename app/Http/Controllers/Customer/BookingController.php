@@ -38,7 +38,6 @@ class BookingController extends Controller
         Request $request,
         string $courtId
     ) {
-
         $court = Court::query()
             ->with([
                 'gor',
@@ -60,7 +59,6 @@ class BookingController extends Controller
             'Customer/Booking/Create',
             [
                 'court' => $court,
-
                 'selectedDate' =>
                     $request->date,
             ]
